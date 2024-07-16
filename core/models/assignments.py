@@ -5,6 +5,7 @@ from core.libs import helpers, assertions
 from core.models.teachers import Teacher
 from core.models.students import Student
 from sqlalchemy.types import Enum as BaseEnum
+from sqlalchemy import or_
 
 
 class GradeEnum(str, enum.Enum):
@@ -91,3 +92,9 @@ class Assignment(db.Model):
     @classmethod
     def get_assignments_by_teacher(cls):
         return cls.query.all()
+    
+    #new
+    @classmethod
+    def get_submitted_and_graded(cls):
+        #return cls.filter(cls.state == "DRAFT").all()
+        return cls.filter(or_(cls.state == "DRAFT", cls.grade != "null")).all()
