@@ -68,6 +68,7 @@ class Assignment(db.Model):
         assertions.assert_valid(assignment.content is not None, 'assignment with empty content cannot be submitted')
 
         assignment.teacher_id = teacher_id
+        assignment.state = AssignmentStateEnum.SUBMITTED
         db.session.flush()
 
         return assignment
@@ -97,4 +98,5 @@ class Assignment(db.Model):
     @classmethod
     def get_submitted_and_graded(cls):
         #return cls.filter(cls.state == "DRAFT").all()
-        return cls.filter(or_(cls.state == "DRAFT", cls.grade != "null")).all()
+        return cls.filter(cls.state=="SUBMITTED")
+        #return cls.filter(or_(cls.state == 'SUBMITTED', cls.state == 'GRADED')).all()
