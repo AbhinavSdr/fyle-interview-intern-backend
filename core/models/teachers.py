@@ -1,5 +1,6 @@
 from core import db
-from core.libs import helpers
+from core.apis.decorators import AuthPrincipal
+from core.libs import helpers, assertions
 
 
 class Teacher(db.Model):
@@ -13,5 +14,6 @@ class Teacher(db.Model):
         return '<Teacher %r>' % self.id
     
     @classmethod
-    def get_all_teachers(cls):
+    def get_all_teachers(cls, auth_principal: AuthPrincipal):
+        assertions.assert_auth(auth_principal.principal_id is not None, 'Only principals are authorized')
         return cls.query.all()

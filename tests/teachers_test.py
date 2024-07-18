@@ -99,3 +99,42 @@ def test_grade_assignment_draft_assignment(client, h_teacher_1):
     data = response.json
 
     assert data['error'] == 'FyleError'
+
+
+def test_grade_assignment_id_assignment(client, h_teacher_1):
+    """
+    failure case: assignment with particular id must exist
+    """
+    response = client.post(
+        '/teacher/assignments/grade',
+        headers=h_teacher_1
+        , json={
+            "id": 10000,
+            "grade": "A"
+        }
+    )
+
+    assert response.status_code == 404
+    data = response.json
+
+    assert data['error'] == 'FyleError'
+
+#new
+def test_grade_assignment(client, h_teacher_1):
+    """
+    failure case: assignment is not graded as per payload
+    """
+    response = client.post(
+        '/teacher/assignments/grade',
+        headers=h_teacher_1
+        , json={
+            "id": 1,
+            "grade": "A"
+        }
+    )
+
+    assert response.status_code == 200
+    data = response.json
+    assert data['data']['grade'] == 'A'
+    assert data['data']['teacher_id'] == 1
+    assert data['data']['id'] == 1

@@ -7,13 +7,10 @@ from core.models.assignments import Assignment
 from .schema import AssignmentSchema, AssignmentGradeSchema
 principal_assignments_resources = Blueprint('principal_assignments_resources', __name__)
 
-
-
 @principal_assignments_resources.route('/assignments', methods=['GET'], strict_slashes=False)
 @decorators.authenticate_principal
 def list_assignments(p):
-
-    principal_assignments = Assignment.get_submitted_and_graded()
+    principal_assignments = Assignment.get_submitted_and_graded(p)
     principal_assignments_dump = AssignmentSchema().dump(principal_assignments, many=True)
 
     return APIResponse.respond(data=principal_assignments_dump)
@@ -32,9 +29,3 @@ def grade_assignment(p, incoming_payload):
     db.session.commit()
     graded_assignment_dump = AssignmentSchema().dump(graded_assignment)
     return APIResponse.respond(data=graded_assignment_dump)
-
-#class GradeEnum(str, enum.Enum):
-    A = 'A'
-    B = 'B'
-    C = 'C'
-    D = 'D'
